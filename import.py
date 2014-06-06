@@ -33,10 +33,3 @@ for line in open(filename):
     counter += 1
     if counter % 1000 == 0:
         pipe.execute()
-        
-    #if counter == 1000:
-        #exit()
-    
-    
-    
-
