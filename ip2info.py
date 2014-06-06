@@ -5,10 +5,10 @@
 
 import socket,struct
 
-class IPRange(object):
-    _indexPrefix = 'iprange-indexes'
-    _infoPrefix = 'iprange-info'
-    _hitKey = 'iprange-hits'
+class IPInfo(object):
+    _indexPrefix = 'IPInfo-indexes'
+    _infoPrefix = 'IPInfo-info'
+    _hitKey = 'IPInfo-hits'
     
     def __init__(self,rangeMin,rangeMax,rangeDesc,rangeCountry):
         self.rangeMin = rangeMin
@@ -24,7 +24,7 @@ class IPRange(object):
         """
         textual representation
         """
-        return "IPRange: %s" % self.__dict__
+        return "IPInfo: %s" % self.__dict__
     
     def save(self,redisConn):
         """
@@ -42,11 +42,11 @@ class IPRange(object):
         Get a range and all its data by ip
         """
         
-        ipnum = IPRange.ip2long(ip)
+        ipnum = IPInfo.ip2long(ip)
 
         #get the location record from redis
-        record = redisConn.zrangebyscore(IPRange._indexPrefix, ipnum ,'+inf', 0, 1, True)
-        
+        record = redisConn.zrangebyscore(IPInfo._indexPrefix, ipnum ,'+inf', 0, 1, True)
+        print "%s---%s" %(IPInfo._indexPrefix, ipnum)
         if not record:
             #not found? k! 
             rangeKey = 'not_found'           
@@ -54,7 +54,7 @@ class IPRange(object):
         else:
             try:   
                 rangeKey = record[0][0]          
-                key = "%s-%s" %(IPRange._infoPrefix,rangeKey)
+                key = "%s-%s" %(IPInfo._infoPrefix,rangeKey)
                 
                 (rngMin,rngMax) = record[0][0].split('-')
                 rngMin = int(rngMin)
@@ -70,13 +70,13 @@ class IPRange(object):
                 rangeKey = 'unknown'
                 result = None
         
-        IPRange.hit(rangeKey,redisConn)
+        IPInfo.hit(rangeKey,redisConn)
         
         return result
     
     @staticmethod   
     def hit(key,redisConn):
-        return redisConn.hincrby(IPRange._hitKey,key,1)
+        return redisConn.hincrby(IPInfo._hitKey,key,1)
         
     
     @staticmethod

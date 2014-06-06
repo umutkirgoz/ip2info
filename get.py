@@ -4,15 +4,15 @@
 # @author Umut KIRGÖZ
 
 import redis,time
-from iprange import IPRange
+from ip2info import IPInfo
 
 r = redis.Redis(host = 'localhost', port = 6379, db = 8)
 
 startTime = time.time()
-ip = '212.101.96.1'
+ip = '194.27.203.11'
 print '#'*80
 print ip
-print IPRange.get(ip, r)
+print IPInfo.get(ip, r)
 
 
 endTime = time.time()

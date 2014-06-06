@@ -3,8 +3,10 @@
 # Jun 5, 2014
 # @author Umut KIRGÖZ
 
-import redis
-from iprange import IPRange
+import redis,time
+from ip2info import IPInfo
+
+startTime = time.time()
 
 r = redis.Redis(host = 'localhost', port = 6379, db = 8)
 
@@ -27,9 +29,12 @@ for line in open(filename):
         continue
     
     print "%s--%s--%s---%s" %(rangeMin,rangeMax,rangeDesc,rangeCountry)
-    range = IPRange(rangeMin,rangeMax,rangeDesc,rangeCountry)
+    range = IPInfo(rangeMin,rangeMax,rangeDesc,rangeCountry)
     range.save(pipe)
     
     counter += 1
-    if counter % 1000 == 0:
+    if counter % 5000 == 0:
         pipe.execute()
+        
+endTime = time.time()
+print 'Process Duration : %s seconds' %(endTime-startTime)
